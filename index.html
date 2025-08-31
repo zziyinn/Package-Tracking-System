@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>订单配送追踪系统 - CSV</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- PapaParse 库 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>📦 订单配送追踪系统</h1>
+    <div id="refresh-info">更新于: --</div>
+  </header>
+
+  <section id="filters">
+    <label>
+      仓库:
+      <select id="warehouseSelect">
+        <option value="">全部</option>
+      </select>
+    </label>
+    <label>
+      DSP:
+      <select id="dspSelect">
+        <option value="">全部</option>
+      </select>
+    </label>
+    <button id="refreshBtn">刷新</button>
+  </section>
+
+  <section id="orders">
+    <table>
+      <thead>
+        <tr>
+          <th>订单号</th>
+          <th>仓库</th>
+          <th>DSP</th>
+          <th>司机</th>
+          <th>线路</th>
+          <th>状态</th>
+          <th>最后更新时间</th>
+          <th>天数差</th>
+          <th>新鲜度</th>
+        </tr>
+      </thead>
+      <tbody id="ordersBody">
+        <!-- 数据行填充在这里 -->
+      </tbody>
+    </table>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

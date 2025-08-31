@@ -1,0 +1,50 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f8f9fa;
+}
+
+header {
+  background: #343a40;
+  color: white;
+  padding: 1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#filters {
+  background: #fff;
+  padding: 1em;
+  border-bottom: 1px solid #ddd;
+}
+
+#orders {
+  padding: 1em;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th, td {
+  padding: 0.75em;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-size: 14px;
+}
+
+tr.dead {
+  background-color: #ffcccc; /* 红色背景：已断更 */
+}
+
+tr.warn {
+  background-color: #ffe6b3; /* 橙色背景：即将断更 */
+}
+
+tr.ok {
+  background-color: #e6ffe6; /* 绿色背景：正常 */
+}
