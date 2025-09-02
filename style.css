@@ -1,50 +1,273 @@
+/*
+  style.css — Beautified, modernized, and fully backward-compatible
+  —— 筛选区两行布局、自定义多选、表格样式、Header 满宽、Footer 固定底部
+*/
+
+/* ========== Tokens ========== */
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --card-alt: #fafbfc;
+  --border: #e5e7eb;
+  --text: #0f172a;
+  --muted: #6b7280;
+  --accent: #2563eb;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(37, 99, 235, 0.12);
+  --table-head: #f3f4f6;
+  --shadow: 0 6px 20px rgba(2, 6, 23, 0.08);
+
+  /* 页面左右留白（正文用），Header 做满宽会抵消它 */
+  --page-pad-x: 60px;
+
+  /* 初始为 110px，页面加载后会由 JS 按 footer 实际高度自动调整 */
+  --footer-h: 110px;
+}
+
+/* ========== Base ========== */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
-  font-family: Arial, sans-serif;
   margin: 0;
-  padding: 0;
-  background: #f8f9fa;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+  padding: 0 var(--page-pad-x);      /* 页面左右留白 */
+  padding-bottom: var(--footer-h);   /* 给固定底部 Footer 预留空间（JS 会更新） */
+}
+
+/* ===== Apple 风 Header（满宽，左 Logo / 中标题 / 右导航 + 第二行更新时间） ===== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #f9fafb;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border-radius: 0;
+}
+
+/* 第1行：三段式 —— 左 Logo 贴边、中标题放大居中、右导航靠右 */
+.header-container {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 8px 8px;   /* 左右 padding 缩小，标题更靠中 */
+}
+
+/* 左：Logo 贴左 */
+.header-left {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+  margin-left: 80px;
+  margin-top: 20px;
+}
+
+.header-logo {
+  height: 60px;   /* 放大 Logo */
+  width: auto;
+}
+
+/* 中：标题大字号，强烈居中 */
+.header-center {
+  justify-self: center;
+  text-align: center;
+  font-size: 40px;     /* 比之前更大 */
+  font-weight: 700;
+    margin-top: 20px;
+  letter-spacing: .3px;
+  color: #111827;
+}
+
+/* 右：文字导航 */
+.header-right {
+  justify-self: end;
+  display: flex;
+  gap: 28px;
+  margin-right: 240px;
+  margin-top: 20px;
+}
+.header-right .nav-link {
+  font-size: 20px;
+  font-weight: 500;
+  color: #374151;
+  text-decoration: none;
+  transition: color .2s ease;
+}
+
+
+/* 第2行：更新时间（右下角） */
+.header-meta {
+  padding: 4px 20px 10px;
+  text-align: right;
+  font-size: 13px;
+  color: #6b7280;
+
 }
 
 header {
-  background: #343a40;
-  color: white;
-  padding: 1em;
+
+  /* 抵消 body 左右留白，让 Header 全宽 */
+  margin-left: calc(var(--page-pad-x) * -1);
+  margin-right: calc(var(--page-pad-x) * -1);
+  border-radius: 0;
+}
+header h1 { margin:0; font-size:20px; }
+header nav a { color:#c7d2fe; padding:6px 10px; margin:0 4px; border-radius:10px; text-decoration:none; }
+header nav a:hover { background: rgba(199,210,254,.15); color:#fff; }
+#refresh-info { font-size:12px; opacity:.85; }
+
+/* ========== Sections ========== */
+section { padding:16px 20px; }
+
+/* ========== Filters：两行布局 & 统一外观 ========== */
+#filters {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;               /* 允许换行 */
+  gap: 16px 24px;                /* 行/列间距 */
+  padding: 14px;
+  align-items: flex-start;
+  margin: 16px 20px;             /* 与内容、边缘的间距 */
+}
+
+#filters label {
+  display:flex;
+  flex-direction: column;
+  gap:6px;
+  min-width: 220px;
+  flex: 1 1 260px;               /* 默认两列/两行的视觉 */
+  color: var(--muted);
+  font-size:14px;
+}
+
+#filters select,
+#filters input,
+#filters .ms-toggle {
+  background: var(--card-alt);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:8px 10px;
+  min-height:36px;
+  font-size:14px;
+  color: var(--text);
+}
+
+/* 第二排按钮独立一行 */
+#filters .btn-group {
+  flex-basis: 100%;
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+#filters .btn-group button {
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border:1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ========== Table ========== */
+table {
+  width:100%;
+  border-collapse:separate; border-spacing:0;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px; overflow:hidden;
+}
+thead th { position:sticky; top:0; background:var(--table-head); color:var(--muted); font-weight:600; }
+th, td  { padding:12px 10px; text-align:center; border-bottom:1px solid var(--border); }
+tbody tr:nth-child(even) { background: var(--card-alt); }
+
+/* 新鲜度（保留旧逻辑） */
+tr.dead { background: color-mix(in oklab, #ef4444 16%, transparent); box-shadow: inset 4px 0 0 0 #ef4444; }
+tr.warn { background: color-mix(in oklab, #f59e0b 16%, transparent); box-shadow: inset 4px 0 0 0 #f59e0b; }
+tr.ok   { background: color-mix(in oklab, #10b981 14%, transparent); box-shadow: inset 4px 0 0 0 #10b981; }
+
+/* 天数差配色（按行类名） */
+tbody tr.days-purple     { background: #8b5cf622; box-shadow: inset 4px 0 0 0 #8b5cf6; }
+tbody tr.days-red-strong { background: #ef444422; box-shadow: inset 4px 0 0 0 #ef4444; }
+tbody tr.days-pink       { background: #f472b622; box-shadow: inset 4px 0 0 0 #f472b6; }
+tbody tr.days-orange     { background: #f59e0b22; box-shadow: inset 4px 0 0 0 #f59e0b; }
+tbody tr.days-green      { background: #10b98122; box-shadow: inset 4px 0 0 0 #10b981; }
+
+/* ========== 自定义多选（通用样式） ========== */
+.ms-field { display: inline-flex; flex-direction: column; gap: 6px; }
+.ms { position: relative; display: inline-block; width: 100%; max-width: 320px; }
+.ms-toggle {
+  display: inline-flex; align-items: center; justify-content: space-between; gap: 6px;
+  padding: 8px 10px; width: 100%;
+  background: var(--card-alt); border:1px solid var(--border); border-radius:10px; cursor:pointer;
+}
+.ms-caret { opacity: .7 }
+.ms-panel {
+  position:absolute; z-index:60; top:calc(100% + 6px); left:0;
+  min-width: 260px; width: max(260px, 100%); max-width: 420px;
+  background:#fff; border:1px solid var(--border); border-radius:12px;
+  box-shadow: 0 10px 24px rgba(2,6,23,.12); padding:10px;
+}
+.ms-head { display:flex; align-items:center; gap:6px; font-size:12px; margin-bottom:8px; }
+.ms-head a { color:#2563eb; text-decoration:none; }
+.ms-head a:hover{ text-decoration:underline; }
+.ms-count { margin-left:auto; color:#6b7280; }
+
+.ms-search { position:relative; margin-bottom:8px; }
+.ms-input { width:100%; padding:8px 30px 8px 10px; border:1px solid var(--border); border-radius:8px; }
+.ms-icon  { position:absolute; right:8px; top:50%; transform: translateY(-50%); opacity:.7; }
+
+.ms-list  { max-height: 260px; overflow:auto; padding-right:4px; }
+.ms-item  { display:flex; align-items:center; gap:8px; padding:6px 4px; }
+.ms-empty { color:#9ca3af; font-size:12px; padding:8px 4px; }
+
+/* 复选项：checkbox 与文字同排 */
+#filters .ms-panel .ms-item { display:flex !important; flex-direction: row !important; align-items:center; gap:8px; padding:6px 4px; }
+#filters .ms-panel .ms-item input[type="checkbox"] { margin:0; flex:0 0 auto; }
+#filters .ms-panel .ms-item .ms-label { flex:1 1 auto; white-space: nowrap; }
+
+/* ========== Footer（固定底部，满宽，三行显示） ========== */
+.footer {
+  background: #f3f4f6;
+  border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  font-size: 13px;
+  color: #000;
+
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 1000;
+  text-align: center; border-radius: 0;  /* 满宽，无圆角 */
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;   /* 三行结构：Logo / 信息行 / 版权 */
+  align-items: center;
+  gap: 6px;
+}
+
+.footer .logo {
+  height: 40px;
+  width: auto;
+  margin-bottom: 4px;
+}
+
+/* 第二行信息：横向排列，居中，含分隔竖线 */
+.footer-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
   align-items: center;
 }
+.footer-info a { color: #000; text-decoration: none; }
+.footer-info a:hover { text-decoration: underline; }
 
-#filters {
-  background: #fff;
-  padding: 1em;
-  border-bottom: 1px solid #ddd;
-}
-
-#orders {
-  padding: 1em;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: white;
-}
-
-th, td {
-  padding: 0.75em;
-  border: 1px solid #ddd;
-  text-align: center;
-  font-size: 14px;
-}
-
-tr.dead {
-  background-color: #ffcccc; /* 红色背景：已断更 */
-}
-
-tr.warn {
-  background-color: #ffe6b3; /* 橙色背景：即将断更 */
-}
-
-tr.ok {
-  background-color: #e6ffe6; /* 绿色背景：正常 */
-}
+.footer-copy { font-size: 12px; color: #555; }

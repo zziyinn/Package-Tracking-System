@@ -2,53 +2,186 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>订单配送追踪系统 - CSV</title>
+  <title>Package Delivery Tracking System - CSV</title>
   <link rel="stylesheet" href="style.css">
-  <!-- PapaParse 库 -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 </head>
 <body>
-  <header>
-    <h1>📦 订单配送追踪系统</h1>
-    <div id="refresh-info">更新于: --</div>
-  </header>
+
+    <header class="site-header">
+      <!-- 第1行：三段式（左 Logo / 中 标题 / 右 导航） -->
+      <div class="header-container">
+        <div class="header-left">
+          <img src="logo.png" alt="Company Logo" class="header-logo">
+        </div>
+
+        <div class="header-center">📦 Package Delivery Tracking System</div>
+
+        <div class="header-right">
+          <a href="index.html" class="nav-link"> 📦 Order List</a>
+          <a href="drivers_analytics.html" class="nav-link"> 🚚 Driver Analysis</a>
+          <a href="routes_analytics.html" class="nav-link"> 🔍 Route Analysis</a>
+
+        </div>
+      </div>
+
+      <!-- 第2行：更新时间（右下角） -->
+      <div class="header-meta">
+        <span id="refresh-info">Update: --</span>
+      </div>
+    </header>
+
 
   <section id="filters">
     <label>
-      仓库:
-      <select id="warehouseSelect">
-        <option value="">全部</option>
-      </select>
+      Warehouse:
+      <select id="warehouseSelect"><option value="">ALL</option></select>
     </label>
-    <label>
+
+    <!-- DSP（保留，已存在多选组件） -->
+    <label class="ms-field">
       DSP:
-      <select id="dspSelect">
-        <option value="">全部</option>
-      </select>
+      <select id="dspSelect" style="display:none"><option value="">ALL</option></select>
+      <div id="dspMS" class="ms">
+        <button type="button" class="ms-toggle">ALL
+          <svg class="ms-caret" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M5 7l5 6 5-6" fill="currentColor"/></svg>
+        </button>
+        <div class="ms-panel" hidden>
+          <div class="ms-head">
+            <a href="#" data-act="selectAll">Select all</a><span> - </span>
+            <a href="#" data-act="clear">Clear</a>
+            <span class="ms-count">Displaying 0</span>
+          </div>
+          <div class="ms-search">
+            <input type="text" placeholder="Search..." class="ms-input" />
+            <svg class="ms-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 21.49 21.49 20l-5.99-6zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+          </div>
+          <div class="ms-list"></div>
+        </div>
+      </div>
     </label>
-    <button id="refreshBtn">刷新</button>
+
+    <!-- 线路：自定义多选 -->
+    <label class="ms-field">
+      Route:
+      <select id="routeSelect" style="display:none"><option value="">ALL</option></select>
+      <div id="routeMS" class="ms">
+        <button type="button" class="ms-toggle">ALL
+          <svg class="ms-caret" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M5 7l5 6 5-6" fill="currentColor"/></svg>
+        </button>
+        <div class="ms-panel" hidden>
+          <div class="ms-head">
+            <a href="#" data-act="selectAll">Select all</a><span> - </span>
+            <a href="#" data-act="clear">Clear</a>
+            <span class="ms-count">Displaying 0</span>
+          </div>
+          <div class="ms-search">
+            <input type="text" placeholder="Search..." class="ms-input" />
+            <svg class="ms-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 21.49 21.49 20l-5.99-6zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+          </div>
+          <div class="ms-list"></div>
+        </div>
+      </div>
+    </label>
+
+    <!-- 状态码：自定义多选 -->
+    <label class="ms-field">
+      Latest Status:
+      <select id="statusSelect" style="display:none"><option value="">ALL</option></select>
+      <div id="statusMS" class="ms">
+        <button type="button" class="ms-toggle">ALL
+          <svg class="ms-caret" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true"><path d="M5 7l5 6 5-6" fill="currentColor"/></svg>
+        </button>
+        <div class="ms-panel" hidden>
+          <div class="ms-head">
+            <a href="#" data-act="selectAll">Select all</a><span> - </span>
+            <a href="#" data-act="clear">Clear</a>
+            <span class="ms-count">Displaying 0</span>
+          </div>
+          <div class="ms-search">
+            <input type="text" placeholder="Search..." class="ms-input" />
+            <svg class="ms-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 21.49 21.49 20l-5.99-6zM9.5 14C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+          </div>
+          <div class="ms-list"></div>
+        </div>
+      </div>
+    </label>
+
+    <label>
+      Driver id:
+      <input id="driverInput" placeholder="Enter driver id">
+    </label>
+
+    <!-- 天数差：自定义多选（固定档位） -->
+    <label class="ms-field">
+      #Days since last update：
+      <select id="daysBucketSelect" style="display:none">
+        <option value="all">ALL</option>
+        <option value="<0">Less than 0 days (discontinued)</option>
+        <option value="<1">Less than 1 day</option>
+        <option value="1">1 day</option>
+        <option value="2">2 days</option>
+        <option value="3">3 days</option>
+      </select>
+      <div id="daysMS" class="ms">
+        <button type="button" class="ms-toggle">ALL
+          <svg class="ms-caret" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+            <path d="M5 7l5 6 5-6" fill="currentColor"/>
+          </svg>
+        </button>
+        <div class="ms-panel" hidden>
+          <div class="ms-head">
+            <a href="#" data-act="selectAll">Select all</a><span> - </span>
+            <a href="#" data-act="clear">Clear</a>
+            <span class="ms-count">Displaying 0</span>
+          </div>
+          <div class="ms-search">
+            <input type="text" placeholder="Search..." class="ms-input" />
+            <svg class="ms-icon" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 
+                6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79L20 
+                21.49 21.49 20l-5.99-6zM9.5 14C7.01 14 5 11.99 5 
+                9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
+            </svg>
+          </div>
+          <div class="ms-list"></div>
+        </div>
+      </div>
+    </label>
+
+    <!-- 第二排按钮 -->
+    <div class="btn-group">
+      <button id="refreshBtn">Refresh</button>
+      <button id="copyOrdersBtn" title="复制当前页面可见行的单号">Copy</button>
+    </div>
   </section>
 
   <section id="orders">
     <table>
       <thead>
         <tr>
-          <th>订单号</th>
-          <th>仓库</th>
+          <th>Tracking</th>
+          <th>Warehouse</th>
           <th>DSP</th>
-          <th>司机</th>
-          <th>线路</th>
-          <th>状态</th>
-          <th>最后更新时间</th>
-          <th>天数差</th>
-          <th>新鲜度</th>
+          <th>Driver id</th>
+          <th># Route</th>
+          <th>Latest Status</th>
+          <th>Latest Update Time</th>
+          <th>#Days since last update</th>
         </tr>
       </thead>
-      <tbody id="ordersBody">
-        <!-- 数据行填充在这里 -->
-      </tbody>
+      <tbody id="ordersBody"></tbody>
     </table>
   </section>
+
+  <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-copy">
+          © 2025 UniUni Logistic Inc. All rights reserved.
+        </div>
+      </div>
+    </footer>
+
 
   <script src="app.js"></script>
 </body>
